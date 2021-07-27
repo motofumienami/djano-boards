@@ -1,0 +1,25 @@
+{% load form_tags widget_tweaks %}
+
+{% if form.non_field_errors %}<!--非フィールドエラーのためのバリデーション。もし、フォームにnon_field_erreorがあったら起動する-->
+  <div class="alert alert-danger" role="alert"><!--「alret」の役割として、「alert-dander」という表現を適用する「div」を定義-->
+    {% for error in form.non_field_errors %}<!--フォームにあるノンフィールドエラーをひとつづつ処理する-->
+      <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p><!--ノンフィールドエラーメッセージを表示するが、最後のノンフィールドエラーだけは「マージンボトム＝０」で表示-->
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% for field in form %}<!-- view.pyで指定されたformのフィールドをひとつずつ取り出して処理する -->
+  <div class="form-group">
+  {{ field.label_tag }}<!-- フィールドのラベルタグを表示 -->
+      {% render_field field class=field|input_class  %}<!--そのフィールド本体(記入欄)を表示（入力状態に応じたの表示）-->
+      {% for error in field.errors %}<!-- エラーが複数ある前提でエラーをひとつずつ取り出して処理 -->
+        <div class="invalid-feedback">
+        {{ error }}<!-- エラーの内容を表示 (行を変えて、入力エラーフィードバック時(赤字）の表現で表示)-->
+        </div>
+      {% endfor %}
+　{% if field.help_text %}<!--そのフィールドにヘルプテキストがあるか否か検証　ある場合-->
+    <small class="form-text text-muted">
+    {{ field.help_text }}<!--そのフィールド名のヘルプテキストを表示 ヘルプテキストの表示で-->
+    </small>
+  {% endif %}
+{% endfor %}<!--以上を繰り返す-->
